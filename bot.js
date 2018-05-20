@@ -30,13 +30,18 @@ bot.on('message', function (user, userID, channelID, message, evt) {
         var cmd = args[0];
        
         switch(cmd) {
-            // /ping
+
+/*** PING COMMAND: ***/
+/* Basic heartbeat test */
             case 'ping':
                 bot.sendMessage({
                     to: channelID,
                     message: 'Pong!'
                 });
             break;
+
+/*** OFF COMMAND: ***/
+/* Turns the bot off */
 		case 'off':
 			if(Number(userID) !== 126024619051188224){
 				return;
@@ -45,14 +50,31 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 			bot.disconnect();
    			logger.info('Exiting...');
 			return;
-		/*case 'floodgatecheck':
-			for(var i=0; i<10; i++)
-				bot.sendMessage({to: channelID,message: 'Checking message #' + i + ' of 10.'});
-			break;*/
+
+/*** REBOOT COMMAND: ***/
+/* Reboots the bot updating the code */
+		case 'reboot':
+			if(Number(userID) !== 126024619051188224){
+				return;
+			}			
+			bot.sendMessage({to: channelID,
+				message: 'Rebooting...'});
+			logger.info('Disonnected ' + bot.username);
+			bot.disconnect();
+   			logger.info('Rebooting...');
+			const subprocess = require('child_process').spawn(process.argv[0], ['bot.js'], {  detached: true,  stdio: 'ignore'});
+			subprocess.unref();
+			return;
+
+/*** ABOUT COMMAND: ***/
+/* Shows basic information regarding the bot */
 		case 'about':
 			bot.sendMessage({to: channelID,
 				message: '```* Sonia Bot *\n\tAuthor: Trucker Hat\n\nContact TruckerHat#7425 for any questions regarding the bot.\n\nType a command + help (eg. ·h2hhelp) to get info regarding the command.\n\nAvailable commands:\n·lose\n·h2h\n·about```'});
 			break;
+
+
+/*** LOSEHELP COMMAND: ***/
 		case 'losehelp':
 			bot.sendMessage({to: channelID,
 				message: '```Command lose-to:\n\t·lose <game> <lost-to> <#games>\n\nDescription:\nRecord an amount of losses against the player <lost-to> in a game.'
@@ -64,6 +86,8 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 			+'\n\n- lost-to   -    Mention (@User#1234) of the player played'
 			+'\n\n- #games    -    Positive amount of games lost to said user```'});
 			break;
+
+/*** H2HHELP COMMAND: ***/
 		case 'h2hhelp':
 			bot.sendMessage({to: channelID,
 				message: '```Command head-to-head:\n\t·h2h <game> <against>\n\nDescription:\nCheck the score bewteen yourself and <against> in a game.'
@@ -74,6 +98,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 			+'\n\tdbfz    -    Dragon Ball FighterZ'
 			+'\n\n- against   -    Mention (@User#1234) of the player to check```'});
 			break;
+
+/*** ADDRLIST COMMAND: ***/
+/* Creates a new list of random pulling for the server */
 		case 'addrlist':
 			/* ANHADIR LISTA ALEATORIA */
 			var serverid = bot.channels[channelID].guild_id;
@@ -96,20 +123,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 			/* CHECKING FOR ADMIN PERMISSIONS */
 			
 			break;
-		case 'ret':
-			/*var uparts = args[1].split('#');
-			var r = 1;
-			for(var ser=0; i<bot.users.size; ser++){
-				if(bot.users[ser].username === uparts[0] && bot.users[ser].discriminator === Number(uparts[1])){
-					r = bot.users[ser].id;
-					break;
-				}
-			}
-			bot.sendMessage({to: channelID,
-				message: 'R: ' + evt.d.mentions[0].id});*/
-			bot.sendMessage({to: channelID,
-				message: 'Deprecated command'});
-			break;
+
+/*** LOSE COMMAND: ***/
+/* Records lost match data from a game */
 		case 'lose':
 			/* LOSE COMMAND */
 			if(args.length < 4){
@@ -183,6 +199,9 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 				
 			}
 			break;
+
+/*** H2H COMMAND: ***/
+/* Shows head to head record between calling and target users */
 		case 'h2h':
 			/* CHECK HEAD 2 HEAD COMMAND */
 			if(args.length < 3){

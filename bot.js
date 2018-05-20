@@ -74,6 +74,28 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 			+'\n\tdbfz    -    Dragon Ball FighterZ'
 			+'\n\n- against   -    Mention (@User#1234) of the player to check```'});
 			break;
+		case 'addrlist':
+			/* ANHADIR LISTA ALEATORIA */
+			var serverid = bot.channels[channelID].guild_id;
+
+			/* CHECKING FOR ADMIN PERMISSIONS */
+			var roles = bot.servers[serverid].members[userID].roles;
+			var adminr = false;
+			var i=0;
+			for(i=0; i<roles.length; i++){
+				if(bot.servers[serverid].roles[roles[i]].GENERAL_ADMINISTRATOR){
+					adminr = true;
+					break;
+				}
+			}
+			if(!adminr){
+				bot.sendMessage({to: channelID,
+					message: 'Administrator permissions are required to run this command'});
+				break;
+			}
+			/* CHECKING FOR ADMIN PERMISSIONS */
+			
+			break;
 		case 'ret':
 			/*var uparts = args[1].split('#');
 			var r = 1;
@@ -123,8 +145,8 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 						return;
 				}
 				bot.sendMessage({to: channelID,
-				message: 'Input info:\n\nGame played:\t`' + game + '`\nLost to:\t`'
-					+ mention.username + '`\nGames lost:\t`' + score + '`'});
+				message: 'Input info:\n\nGame played:   `' + game + '`\nLost to:               `'
+					+ mention.username + '`\nGames lost:       `' + score + '`'});
 				
 				fs.exists(path, (exists) => {
 				  if (!exists)

@@ -122,14 +122,14 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 			}
 			if(!adminr){
 				bot.sendMessage({to: channelID,
-					message: 'Administrator permissions are required to run this command'});
+					message: 'Administrator permissions are required to run this command.'});
 				break;
 			}
 			/* CHECKING FOR ADMIN PERMISSIONS */
 
 			if(args.length !== 2){
 				bot.sendMessage({to: channelID,
-					message: 'Command `addrlist` must be run using `addrlist <listname>`'});
+					message: 'Command `addrlist` must be run using `addrlist <listname>`.'});
 				break;
 			}
 			var lname = args[1];
@@ -148,13 +148,13 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 				/* SECURITY CHECK */
 				if(Number(bot.id) === Number(lname)){
 					bot.sendMessage({to: channelID,
-						message: 'Cannot make a list with that name'});
+						message: 'Cannot make a list with that name.'});
 					return;
 				}
 				/* SECURITY CHECK */
 
-				fs.exists(path+'\\data.th', function(exists){
-					if(!exists){
+				fs.exists(path+'\\data.th', function(exi){
+					if(!exi){
 						bot.sendMessage({to: channelID,
 							message: 'Corrupted server data, please contact `' + ANAME + '`.'});
 						return;

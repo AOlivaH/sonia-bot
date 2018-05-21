@@ -1,3 +1,8 @@
+var ERROR_SERVER_FOLDCR = 80003;
+
+var MAX_RLISTS = 5;
+var ANAME = 'TruckerHat#7425';
+var fs = require('fs');
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
@@ -70,7 +75,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 /* Shows basic information regarding the bot */
 		case 'about':
 			bot.sendMessage({to: channelID,
-				message: '```* Sonia Bot *\n\tAuthor: Trucker Hat\n\nContact TruckerHat#7425 for any questions regarding the bot.\n\nType a command + help (eg. ·h2hhelp) to get info regarding the command.\n\nAvailable commands:\n·lose\n·h2h\n·about```'});
+				message: '```* Sonia Bot *\n\tAuthor: Trucker Hat\n\nContact '+ANAME+' for any questions regarding the bot.\n\nType a command + help (eg. ·h2hhelp) to get info regarding the command.\n\nAvailable commands:\n·lose\n·h2h\n·about```'});
 			break;
 
 
@@ -121,6 +126,77 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 				break;
 			}
 			/* CHECKING FOR ADMIN PERMISSIONS */
+
+			if(args.length !== 2){
+				bot.sendMessage({to: channelID,
+					message: 'Command `addrlist` must be run using `addrlist <listname>`'});
+				break;
+			}
+			var lname = args[1];
+			var path='servers\\'+serverid;
+			var mapa=null;
+			fs.exists(path, function(exists){
+				if(!exists){
+					fs.mkdir(path, function(err){});
+					mapa = new Map();
+					mapa.set(Number(bot.id), 0);
+					fs.writeFile(path + '\\' + 'data.th', JSON.stringify([...mapa]) , function(err) {
+						 if(err) console.log(err)
+					});
+				}
+
+				/* SECURITY CHECK */
+				if(Number(bot.id) === Number(lname)){
+					bot.sendMessage({to: channelID,
+						message: 'Cannot make a list with that name'});
+					return;
+				}
+				/* SECURITY CHECK */
+
+				fs.exists(path+'\\data.th', function(exists){
+					if(!exists){
+						bot.sendMessage({to: channelID,
+							message: 'Corrupted server data, please contact `' + ANAME + '`.'});
+						return;
+					}else{
+						fs.readFile(path + '\\' + 'data.th', function(err, data) {
+							if(err){return;}
+							var d = JSON.parse(data);
+							mapa = new Map(d);
+							if(mapa.get(Number(bot.id)) >= MAX_RLISTS){
+								bot.sendMessage({to: channelID,
+								message: 'Server already has reached the maximum of random lists allowed.'
+									+ '\nPlease delete some to add more.'});
+								return;
+							}
+
+							if(mapa.has(lname)){
+								bot.sendMessage({to: channelID,
+								message: 'List `' + lname + '` already exists.'});
+								return;
+							}
+
+							for(i=0; i<MAX_RLISTS; i++){
+								if(!fs.existsSync(path + '\\' + i + '.th')){
+									mapa.set(lname, i);
+									mapa.set(Number(bot.id), mapa.get(Number(bot.id))+1);
+									fs.writeFile(path + '\\' + 'data.th', JSON.stringify([...mapa]) , function(err) {
+										 if(err) console.log(err)
+									});
+									mapa = new Map();		
+									fs.writeFile(path + '\\' + i + '.th', JSON.stringify([...mapa]) , function(err) {
+										 if(err) console.log(err)
+									});
+									bot.sendMessage({to: channelID,
+									message: 'Added random list `'+ lname + '`.'});
+									return;
+								}
+							}
+						});
+					}
+				});
+			});
+			
 			
 			break;
 
@@ -147,7 +223,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 					return;
 				}
 				var path='head2head\\'+game;
-				var fs = require('fs');
 				var mapa = null;
 				switch(game){
 					case 'pm': case 'melee':
@@ -228,7 +303,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 				}
 				var mention = evt.d.mentions[0];
 				var path='head2head\\'+game;
-				var fs = require('fs');
 				fs.exists(path, (exists) => {
 				  if (!exists)
 					fs.mkdirSync(path);

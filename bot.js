@@ -32,7 +32,20 @@ bot.on('ready', function (evt) {
 
 bot.on('message', function (user, userID, channelID, message, evt) {
 
-    var PREFIX = '>';
+	var PREFIX = '>';
+	var serverid = bot.channels[channelID].guild_id;
+
+	var spath='servers\\'+serverid;
+	fs.exists(spath, function(exists){
+		if(!exists){
+			fs.mkdir(spath, function(err){});
+			var mapa = new Map();
+			mapa.set(Number(bot.id), 0);
+			fs.writeFile(spath + '\\' + 'data.th', JSON.stringify([...mapa]) , function(err) {
+				 if(err) console.log(err)
+			});
+		}
+	});
 	
     if (message.substring(0, 1) == PREFIX) {
         var args = message.substring(1).split(' ');
@@ -139,7 +152,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 /*** ADDRLIST COMMAND: ***/
 /* Creates a new list of random pulling for the server */
 		case 'addrlist':
-			var serverid = bot.channels[channelID].guild_id;
 
 			/* CHECKING FOR ADMIN PERMISSIONS */
 			var roles = bot.servers[serverid].members[userID].roles;
@@ -172,13 +184,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 			var path='servers\\'+serverid;
 			var mapa=null;
 			fs.exists(path, function(exists){
-				if(!exists){
-					fs.mkdir(path, function(err){});
-					mapa = new Map();
-					mapa.set(Number(bot.id), 0);
-					fs.writeFile(path + '\\' + 'data.th', JSON.stringify([...mapa]) , function(err) {
-						 if(err) console.log(err)
-					});					
+				if(!exists){					
 					bot.sendMessage({to: channelID,
 					message: 'First time registering this server, please, run the command once again.'});
 					return;
@@ -240,7 +246,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 /*** ADDTORLIST COMMAND: ***/
 /* Adds a response to a random list */
 		case 'addtorlist':
-			var serverid = bot.channels[channelID].guild_id;
 
 			/* CHECKING FOR ADMIN PERMISSIONS */
 			var roles = bot.servers[serverid].members[userID].roles;
@@ -343,8 +348,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 				break;
 			}
 
-			var serverid = bot.channels[channelID].guild_id;
-
 			/* CHECKING FOR ADMIN PERMISSIONS */
 			var roles = bot.servers[serverid].members[userID].roles;
 			var adminr = false;
@@ -418,8 +421,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 				message: 'Command `deleterlist` must be run using `deleterlist <listname>`.'});
 				break;
 			}
-
-			var serverid = bot.channels[channelID].guild_id;
 
 			/* CHECKING FOR ADMIN PERMISSIONS */
 			var roles = bot.servers[serverid].members[userID].roles;
@@ -682,7 +683,6 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 /*** RLIST COMMAND RESPONSE CHECK: ***/
 /* Checks whether or not the user is trying */
 /* to pull a response from a random list    */
-			var serverid = bot.channels[channelID].guild_id;
 
 			if(args.length === 1 && !(Number(bot.id) === Number(cmd))){
 				var path='servers\\'+serverid;

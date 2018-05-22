@@ -99,7 +99,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 /*** ADDRLISTHELP COMMAND: ***/
 		case 'addrlisthelp':
 			bot.sendMessage({to: channelID,
-				message: '```Command add random list:\n\t' + PREFIX +'addrlist <listname>\n\nDescription:\nAdd a list that returns random prerecorded messages.'
+				message: '```Command add random list:\n\t' + PREFIX +'addrlist <listname>\n\nDescription:\nAdd a list that returns random prerecorded messages.\nYou can call that list by running:\n\t'+ PREFIX + '<listname>'
 			+ '\n\nArguments:\n- listname      -    Name of the list```'});
 			break;
 

@@ -31,9 +31,10 @@ bot.on('ready', function (evt) {
 });
 
 bot.on('message', function (user, userID, channelID, message, evt) {
-    // Our bot needs to know if it will execute a command
-    // It will listen for messages that will start with `!`
-    if (message.substring(0, 1) == '·') {
+
+    var PREFIX = '>';
+	
+    if (message.substring(0, 1) == PREFIX) {
         var args = message.substring(1).split(' ');
         var cmd = args[0];
        
@@ -78,42 +79,42 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 /* Shows basic information regarding the bot */
 		case 'about':
 			bot.sendMessage({to: channelID,
-				message: '```* Sonia Bot *\n\tAuthor: Trucker Hat\n\nContact '+ANAME+' for any questions regarding the bot.\n\nType a command + help (eg. ·h2hhelp) to get info regarding the command.\n\nAvailable commands:\n\t·about\n\nGames:\n\t·lose\n\t·h2h\n\nMisc:\n\t·addrlist\n\t·addtorlist\n\t·clearrlist\n\t·deleterlist```'});
+				message: '```* Sonia Bot *\n\tAuthor: Trucker Hat\n\nContact '+ANAME+' for any questions regarding the bot.\n\nType a command + help (eg. ' + PREFIX +'h2hhelp) to get info regarding the command.\n\nAvailable commands:\n\t' + PREFIX +'about\n\nGames:\n\t' + PREFIX +'lose\n\t' + PREFIX +'h2h\n\nMisc:\n\t' + PREFIX +'addrlist\n\t' + PREFIX +'addtorlist\n\t' + PREFIX +'clearrlist\n\t' + PREFIX +'deleterlist```'});
 			break;
 
 
 /*** ADDRLISTHELP COMMAND: ***/
 		case 'addrlisthelp':
 			bot.sendMessage({to: channelID,
-				message: '```Command add random list:\n\t·addrlist <listname>\n\nDescription:\nAdd a list that returns random prerecorded messages.'
+				message: '```Command add random list:\n\t' + PREFIX +'addrlist <listname>\n\nDescription:\nAdd a list that returns random prerecorded messages.'
 			+ '\n\nArguments:\n- listname      -    Name of the list```'});
 			break;
 
 /*** ADDTORLISTHELP COMMAND: ***/
 		case 'addtorlisthelp':
 			bot.sendMessage({to: channelID,
-				message: '```Command add to random list:\n\t·addtorlist <listname> <response>\n\nDescription:\nAdd a response to a random message list.'
+				message: '```Command add to random list:\n\t' + PREFIX +'addtorlist <listname> <response>\n\nDescription:\nAdd a response to a random message list.'
 			+ '\n\nArguments:\n- listname      -    Name of the list\n- response      -    Message to be displayed```'});
 			break;
 
 /*** CLEARRLISTHELP COMMAND: ***/
 		case 'clearrlisthelp':
 			bot.sendMessage({to: channelID,
-				message: '```Command clear random list:\n\t·clearrlist <listname>\n\nDescription:\nRemoves all responses from a random message list.'
+				message: '```Command clear random list:\n\t' + PREFIX +'clearrlist <listname>\n\nDescription:\nRemoves all responses from a random message list.'
 			+ '\n\nArguments:\n- listname      -    Name of the list```'});
 			break;
 
 /*** DELETERLISTHELP COMMAND: ***/
 		case 'deleterlisthelp':
 			bot.sendMessage({to: channelID,
-				message: '```Command delete random list:\n\t·deleterlist <listname>\n\nDescription:\nDeletes a random message list.'
+				message: '```Command delete random list:\n\t' + PREFIX +'deleterlist <listname>\n\nDescription:\nDeletes a random message list.'
 			+ '\n\nArguments:\n- listname      -    Name of the list```'});
 			break;
 
 /*** LOSEHELP COMMAND: ***/
 		case 'losehelp':
 			bot.sendMessage({to: channelID,
-				message: '```Command lose-to:\n\t·lose <game> <lost-to> <#games>\n\nDescription:\nRecord an amount of losses against the player <lost-to> in a game.'
+				message: '```Command lose-to:\n\t' + PREFIX +'lose <game> <lost-to> <#games>\n\nDescription:\nRecord an amount of losses against the player <lost-to> in a game.'
 			+ '\n\nArguments:\n- game      -    Game played.\n\tList of all supported games:'
 			+'\n\tpm      -    Project M\n\tmelee   -    Super Smash Bros. Melee'
 			+'\n\ts4      -    Super Smash Bros. for Wii U\n\tmvci    -    Marvel vs Capcom: Infinite'
@@ -126,7 +127,7 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 /*** H2HHELP COMMAND: ***/
 		case 'h2hhelp':
 			bot.sendMessage({to: channelID,
-				message: '```Command head-to-head:\n\t·h2h <game> <against>\n\nDescription:\nCheck the score bewteen yourself and <against> in a game.'
+				message: '```Command head-to-head:\n\t' + PREFIX +'h2h <game> <against>\n\nDescription:\nCheck the score bewteen yourself and <against> in a game.'
 			+ '\n\nArguments:\n- game      -    Game played.\n\tList of all supported games:'
 			+'\n\tpm      -    Project M\n\tmelee   -    Super Smash Bros. Melee'
 			+'\n\ts4      -    Super Smash Bros. for Wii U\n\tmvci    -    Marvel vs Capcom: Infinite'
@@ -605,8 +606,8 @@ bot.on('message', function (user, userID, channelID, message, evt) {
 				fs.exists(path + '\\' + userID + '.th', (exists) => {
 				  	if (!exists){
 						opponent=0;
-						fs.exists(path + '\\' + Number(mention.id) + '.th', (exists) => {
-							if(!exists){
+						fs.exists(path + '\\' + mention.id + '.th', (exi) => {
+							if(!exi){
 								usersc=0;
 								bot.sendMessage({to: channelID,
 									message: 'Game:\t`' + game + '`\t'+ user + ' `' + usersc +'` - `' + opponent + '` ' + mention.username});
